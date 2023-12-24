@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <title>Weather App</title>
+    <link rel = "stylesheet" href = "index.css">
+</head>
+<body>
+    
+<div class = "card">
+    <div class = "search">
+        <input type = "text"  placeholder="Enter city name"  spellcheck="false">
+        <button> <img src = "search.png" alt = ""></button>
+</div>
+<div class = "weather">
+        <img src = "rain.png" class = "weather-icon">
+        <h1 class ="temp" >22°c</h1>
+        <h2 class = "city" >  New York</h2>                
+        <div class="details">
+         <div class="col">
+             <img src="humidity.png" height="40px" width="30px">
+             <div>
+                 <p class="humidity">50%</p>
+                 <p class = "humid_para">Humidity</p>
+             </div>
+         </div>
+         <div class="col">
+             <img src="wind.png" height="40px" width="30px">
+             <div>
+                 <p class="wind">15 km/h</p>
+                 <p class ="wind_para">Wind</p>
+             </div>
+         </div>
+         <div class="col">
+             <img src="feels_like.png" height="40px" width="30px">
+             <div>
+             <p class="feels_like">20 °C</p>
+                 <p class = "feels_para">Feels Like</p>
+             </div>
+         </div>
+         <div class="col">
+            <img src="Visibility.png" height="40px" width="30px">
+            <div>
+            <p class="visibility">0.2km</p>
+                <p class = "visibility_para">Visibility</p>
+            </div>
+        </div>
+        <div class="col">
+         <img src="Description.png" height="40px" width="30px">
+         <div>
+         <p class="description">Fog</p>
+             <p class = "description_para">Desciption</p>
+         </div>
+     </div>
+         <div class="col">
+             <img src="pressure.png" height="40px" width="30px">
+             <div>
+             <p class="pressure">20 Pascal</p>
+                 <p class ="pressure_para">Pressure</p>
+             </div>
+         </div>
+     </div>     
+<script>
+const apiKey = "251d34d74a6376b31068f108c7b06c71";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
+
+async function checkWeather(city){
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+    var data = await response.json();
+
+
+    
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML =  Math.round(data.main.temp)+  "°c";
+    document.querySelector(".humidity").innerHTML = data.main.humidity+ "%";
+    document.querySelector(".wind").innerHTML = data.wind.speed + "Km/h";
+    document.querySelector(".feels_like").innerHTML = data.main.feels_like + "°";
+    document.querySelector(".visibility").innerHTML =data.visibility +"" +"Km";
+    document.querySelector(".description").innerHTML= data.weather[0].description;
+    //document.querySelector(".pressure").innerHTML = data.main.pressure;
+    
+// Check if pressure exists in the data object
+if (data.main.hasOwnProperty('pressure')) {
+        document.querySelector(".pressure").innerHTML = data.main.pressure+ "mb";
+    } else {
+        console.error("Pressure data not found in the API response.");
+        document.querySelector(".pressure").innerHTML = "N/A";
+    }
+
+
+     if(data.weather[0].main=="Clouds"){
+           weatherIcon.src = "clouds.png"
+     } 
+     else if (data.weather[0].main== "Clear"){
+        weatherIcon.src = "clear.png"
+     }
+     else if (data.weather[0].main== "Rain"){
+        weatherIcon.src = "rain.png"
+     }
+     else if (data.weather[0].main== "Drizzle"){
+        weatherIcon.src = "drizzle.png"
+     }
+     else if (data.weather[0].main== "Mist"){
+        weatherIcon.src = "mist.png"
+     }
+
+       document.querySelector(".weather").style.display= "block"   
+
+}
+
+searchBtn.addEventListener("click", ()=> {
+      checkWeather(searchBox.value)
+})
+
+
+</script>
+
+</body>
+</html>
